@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
+using System;
 #endregion
 
 namespace WinFormsGraphicsDevice
@@ -37,20 +38,54 @@ namespace WinFormsGraphicsDevice
             //split into 1 
 
 
-
+            string output = "";
             int _index = 0; 
             for (int i = 0; i <256; i++)
             {
                 for (int j = 0; j < 8; j++) 
                 {
-                    int idx = (i * 16) + j;
-                    System.Diagnostics.Debug.WriteLine("debug:" + idx);
-                    System.Diagnostics.Debug.WriteLine("debug:" + (idx+8));
+                    int idx = (i * 16) + j; 
+
+
 
                     byte[] fullbyte = new byte[2];
-                    fullbyte[0] = b[i];
-                    fullbyte[1] = b[i + 8];
-                    BitArray patt_bit = new BitArray(b[i]);
+                    fullbyte[0] = b[idx];
+                    fullbyte[1] = b[idx + 8];
+                    BitArray pat_bit = new BitArray(fullbyte);
+                     
+                    for (int k = 0; k < pat_bit.Length / 2; k++)
+                    {
+                        string bitstr = "";
+
+                        if (pat_bit[k]) bitstr += "1";
+                        else bitstr += "0";
+                        if (pat_bit[k+8]) bitstr += "1";
+                        else bitstr += "0";
+                         
+                        Color col = new Color();
+                        switch (bitstr)
+                        {
+                            case "00":
+                                col = Color.Black;
+                                break;
+                            case "01":
+                                col = new Color(80, 80, 80);
+                                break;
+                            case "10":
+                                col = new Color(150, 150, 150);
+                                break;
+                            case "11":
+                                col = new Color(255, 255, 255);
+                                break;
+                            default:
+                                break;
+                        }
+
+                     //  output += high_bit[k].ToString();
+
+                        imageData[_index] = col;
+                        _index++;
+                    }
                     
                 }
                 /*
@@ -70,6 +105,8 @@ namespace WinFormsGraphicsDevice
                 
 
             }
+
+            System.Diagnostics.Debug.WriteLine("debug:" + output);
             chr_map.SetData<Color>(imageData);
         }
 
