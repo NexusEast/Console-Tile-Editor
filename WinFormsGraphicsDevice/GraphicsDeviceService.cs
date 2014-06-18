@@ -116,6 +116,7 @@ namespace WinFormsGraphicsDevice
         /// </summary>
         public void ResetDevice(int width, int height)
         {
+            System.Diagnostics.Debug.WriteLine("123123123123123");
             if (DeviceResetting != null)
                 DeviceResetting(this, EventArgs.Empty);
 

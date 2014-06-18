@@ -16,7 +16,8 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content; 
+using Microsoft.Xna.Framework.Content;
+using System.IO; 
 #endregion
 
 namespace WinFormsGraphicsDevice
@@ -36,7 +37,8 @@ namespace WinFormsGraphicsDevice
         SpriteBatch spriteBatch;
         List<Texture2D> grids = new List<Texture2D>(16 * 16);
         Rectangle selectedRect = new Rectangle();
-        SpriteFont font; 
+        SpriteFont font;
+        System.Windows.Forms.PictureBox _pb;
         public void bytetotex(byte[] b)
         {
             chr_map = new Texture2D(GraphicsDevice, 128, 128);
@@ -127,6 +129,10 @@ namespace WinFormsGraphicsDevice
             chr_map.SetData<Color>(imageData);
         }
 
+        public SpinningTriangleControl(System.Windows.Forms.PictureBox pb)
+        {
+            _pb = pb;
+        }
         public void BitmapToTexture2D(System.Drawing.Bitmap image)
         {
             // Buffer size is size of color array multiplied by 4 because   
@@ -146,13 +152,26 @@ namespace WinFormsGraphicsDevice
 
         }
 
+        public static System.Drawing.Image Texture2Image(Texture2D texture)
+        {
+            System.Drawing.Image img;
+            using (MemoryStream MS = new MemoryStream())
+            {
+                texture.SaveAsPng(MS, texture.Width, texture.Height);
+                //Go To the  beginning of the stream.
+                MS.Seek(0, SeekOrigin.Begin);
+                //Create the image based on the stream.
+                img = System.Drawing.Bitmap.FromStream(MS);
+            }
+            return img;
+        }
 
-
+        int frameCount = 0;
         /// <summary>
         /// Initializes the control.
         /// </summary>
         protected override void Initialize()
-        { 
+        {
             content = new ContentManager(Services, "Content");
             font = content.Load<SpriteFont>("hudFont");
             Color[] imageData = new Color[8 * 8];
@@ -181,7 +200,11 @@ namespace WinFormsGraphicsDevice
         Point startPoint = new Point(-999, -999);
         private void update()
         {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if (!ClientRectangle.Contains(PointToClient(System.Windows.Forms.Control.MousePosition)))
+            {
+                return;
+            }
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 if (startPoint.X == -999)
                 {
@@ -268,8 +291,8 @@ namespace WinFormsGraphicsDevice
 
                 if (i % 16 == 15)
                     grid_line++;
-                if (i == 19)
-                    spriteBatch.DrawString(font, "gridRec:" + gridRec.ToString(), new Vector2(1, 23), Color.White);
+               // if (i == 19)
+              //      spriteBatch.DrawString(font, "gridRec:" + gridRec.ToString(), new Vector2(1, 23), Color.White);
             }
             formatted.Location = minPos;
             formatted.Width = maxPos.X - minPos.X +16;
@@ -277,15 +300,17 @@ namespace WinFormsGraphicsDevice
 
                 
               // GraphicsDevice.SetRenderTarget
-            if(clippedTex!=null)
-            spriteBatch.Draw(clippedTex, new Vector2(50, 50), Color.White);
+           // if(clippedTex!=null)
+           // spriteBatch.Draw(clippedTex, new Vector2(50, 50), Color.White);
            // DrawRectangle(formatted, Color.RoyalBlue);
-            spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
+           // spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
             spriteBatch.End();
-
-            
+            frameCount++;
+            if(frameCount %30 == 29)
+            _pb.Image = Texture2Image((Texture2D)clippedTex);
              
 
         }
     }
 }
+// spinningTriangleControl = new SpinningTriangleControl(pictureBox1);
