@@ -36,14 +36,14 @@ namespace WinFormsGraphicsDevice
         SpriteBatch spriteBatch;
         List<Texture2D> grids = new List<Texture2D>(16 * 16);
         Rectangle selectedRect = new Rectangle();
-        SpriteFont font;
+        SpriteFont font; 
         public void bytetotex(byte[] b)
         {
             chr_map = new Texture2D(GraphicsDevice, 128, 128);
             Color[] imageData = new Color[128 * 128];
             //split into 1 
 
-             
+
             int _index = 0;
 
             int cube_line = 0;
@@ -52,11 +52,11 @@ namespace WinFormsGraphicsDevice
             int line = 0;
             int colum = 0;
 
-            for (int i = 0; i <256; i++)
+            for (int i = 0; i < 256; i++)
             {
-                for (int j = 0; j < 8; j++) 
+                for (int j = 0; j < 8; j++)
                 {
-                    int idx = (i * 16) + j; 
+                    int idx = (i * 16) + j;
 
 
 
@@ -64,15 +64,15 @@ namespace WinFormsGraphicsDevice
                     fullbyte[0] = b[idx];
                     fullbyte[1] = b[idx + 8];
                     BitArray pat_bit = new BitArray(fullbyte);
-                     
+
                     for (int k = 0; k < pat_bit.Length / 2; k++)
                     {
                         string bitstr = "";
                         if (pat_bit[k]) bitstr += "1";
                         else bitstr += "0";
-                        if (pat_bit[k+8]) bitstr += "1";
+                        if (pat_bit[k + 8]) bitstr += "1";
                         else bitstr += "0";
-                         
+
                         Color col = new Color();
                         switch (bitstr)
                         {
@@ -104,22 +104,22 @@ namespace WinFormsGraphicsDevice
                             colum++;
 
                         }
-                         
+
                         if (colum == 16)
                         {
-                            colum = 0; 
-                            if(line <15)
-                            line++;
+                            colum = 0;
+                            if (line < 15)
+                                line++;
 
                         }
 
-                        int caonvertidx = (7-cube_row) +128 * (cube_line) + 8 * colum + 1024 * line;
+                        int caonvertidx = (7 - cube_row) + 128 * (cube_line) + 8 * colum + 1024 * line;
                         imageData[caonvertidx] = col;
 
                         cube_row++;
                         _index++;
                     }
-                    
+
                 }
 
             }
@@ -127,7 +127,7 @@ namespace WinFormsGraphicsDevice
             chr_map.SetData<Color>(imageData);
         }
 
-        public  void BitmapToTexture2D( System.Drawing.Bitmap image)
+        public void BitmapToTexture2D(System.Drawing.Bitmap image)
         {
             // Buffer size is size of color array multiplied by 4 because   
             // each pixel has four color bytes  
@@ -142,9 +142,9 @@ namespace WinFormsGraphicsDevice
             // Creates a texture from IO.Stream - our memory stream  
             chr_map = Texture2D.FromStream(
                 GraphicsDevice, memoryStream);
-             
-             
-        } 
+
+
+        }
 
 
 
@@ -152,31 +152,31 @@ namespace WinFormsGraphicsDevice
         /// Initializes the control.
         /// </summary>
         protected override void Initialize()
-        {
+        { 
             content = new ContentManager(Services, "Content");
             font = content.Load<SpriteFont>("hudFont");
             Color[] imageData = new Color[8 * 8];
             for (int i = 0; i < imageData.Length; i++)
             {
                 imageData[i] = Color.Blue;
-                }
-            for (int i = 0; i < grids.Capacity ; i++)
+            }
+            for (int i = 0; i < grids.Capacity; i++)
             {
                 Texture2D temp = new Texture2D(GraphicsDevice, 8, 8);
                 grids.Add(temp);
                 temp.SetData<Color>(imageData);
             }
 
-            spriteBatch = new SpriteBatch(GraphicsDevice); 
+            spriteBatch = new SpriteBatch(GraphicsDevice);
             // Hook the idle event to constantly redraw our animation.
-             System.Windows.Forms.Application.Idle += delegate { Invalidate(); };
-            Texture2D t2d = new Texture2D(GraphicsDevice, 128, 128); 
-        
+            System.Windows.Forms.Application.Idle += delegate { Invalidate(); };
+            Texture2D t2d = new Texture2D(GraphicsDevice, 128, 128);
+
         }
         public Point GetMousePosition()
         {
-           System.Drawing.Point p = PointToClient( System.Windows.Forms.Control.MousePosition);
-           return new Point(p.X, p.Y);
+            System.Drawing.Point p = PointToClient(System.Windows.Forms.Control.MousePosition);
+            return new Point(p.X, p.Y);
         }
         Point startPoint = new Point(-999, -999);
         private void update()
@@ -187,7 +187,7 @@ namespace WinFormsGraphicsDevice
                 {
                     selectedRect = Rectangle.Empty;
                     startPoint.X = GetMousePosition().X;
-                    startPoint.Y = GetMousePosition().Y; 
+                    startPoint.Y = GetMousePosition().Y;
                     selectedRect.Location = startPoint;
                 }
                 int wid = (GetMousePosition().X - startPoint.X);
@@ -202,54 +202,90 @@ namespace WinFormsGraphicsDevice
                 if (hei >= 0)
                     selectedRect.Y = startPoint.Y;
                 else
-                    selectedRect.Y = GetMousePosition().Y; 
+                    selectedRect.Y = GetMousePosition().Y;
 
                 selectedRect.Width = Math.Abs(GetMousePosition().X - startPoint.X);
                 selectedRect.Height = Math.Abs(GetMousePosition().Y - startPoint.Y);
             }
             else
-            {
+            { 
+                
                 startPoint.X = -999;
             }
         }
-        
+
         /// <summary>
         /// Draws the control.
         /// </summary>
-        /// 
-        
+        ///  
+        private void DrawRectangle(Rectangle coords, Color color)
+        {
+            var rect = new Texture2D(GraphicsDevice, 1, 1);
+            rect.SetData(new[] { color });
+            spriteBatch.Draw(rect, coords, color);
+        }
+        Rectangle formatted = new Rectangle();
         protected override void Draw()
-        { 
+        {
             update();
+            RenderTarget2D clippedTex = null;
+            if (formatted != Rectangle.Empty)
+            {
+                  clippedTex = new RenderTarget2D(GraphicsDevice, formatted.Width, formatted.Height);
+                 GraphicsDevice.SetRenderTarget(clippedTex);
+                 GraphicsDevice.Clear(Color.Black);
+                 spriteBatch.Begin();
+                 if (chr_map != null)
+                     spriteBatch.Draw(chr_map, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width/2, formatted.Height/2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                 spriteBatch.End();
+                 
+                 GraphicsDevice.SetRenderTarget(null);
+            }
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            if (chr_map!=null) 
+            if (chr_map != null)
                 spriteBatch.Draw(chr_map, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
 
 
             int grid_line = 0;
+            Point minPos = new Point(-1, -1);
+            Point maxPos = new Point(-1, -1); 
+            int lastIdx = -1;
             for (int i = 0; i < grids.Count; i++)
             {
-                Vector2 pos = new Vector2(i % 16 * 16, grid_line*16);
-                int alpha = 0;
-                bool isSelected = false;
-                Rectangle  gridRec = new Rectangle((int)pos.X, (int)pos.Y, (int)grids[i].Bounds.Width*2, (int)grids[i].Bounds.Height*2);
-                
-                if(selectedRect.Intersects(gridRec)|| selectedRect.Contains(gridRec)) 
-                    alpha = 100;
+                Vector2 pos = new Vector2(i % 16 * 16, grid_line * 16);
+                Rectangle gridRec = new Rectangle((int)pos.X, (int)pos.Y, (int)grids[i].Bounds.Width * 2, (int)grids[i].Bounds.Height * 2);
 
-                spriteBatch.Draw(grids[i], pos, null, new Color(255, 255, 255, alpha), 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                if (selectedRect.Intersects(gridRec) || selectedRect.Contains(gridRec))
+                {
+                    if (minPos.X == -1)
+                        minPos = gridRec.Location;
+                    maxPos = gridRec.Location;
+                    spriteBatch.Draw(grids[i], pos, null, new Color(255, 255, 255, 100), 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                }
+
+
                 if (i % 16 == 15)
                     grid_line++;
-               if(i==19)
-                   spriteBatch.DrawString(font, "gridRec:" + gridRec.ToString(), new Vector2(1, 23), Color.White);
+                if (i == 19)
+                    spriteBatch.DrawString(font, "gridRec:" + gridRec.ToString(), new Vector2(1, 23), Color.White);
             }
-            
-            spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
-            spriteBatch.End(); 
+            formatted.Location = minPos;
+            formatted.Width = maxPos.X - minPos.X +16;
+            formatted.Height = maxPos.Y - minPos.Y + 16;
 
-              
+                
+              // GraphicsDevice.SetRenderTarget
+            if(clippedTex!=null)
+            spriteBatch.Draw(clippedTex, new Vector2(50, 50), Color.White);
+           // DrawRectangle(formatted, Color.RoyalBlue);
+            spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
+            spriteBatch.End();
+
+            
              
+
         }
     }
 }
