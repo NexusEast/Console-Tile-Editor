@@ -9,11 +9,14 @@
 
 #region Using Statements
 using System.Diagnostics;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content; 
 #endregion
 
 namespace WinFormsGraphicsDevice
@@ -28,18 +31,27 @@ namespace WinFormsGraphicsDevice
     class SpinningTriangleControl : GraphicsDeviceControl
     {
 
+        ContentManager content;
         Texture2D chr_map = null;
         SpriteBatch spriteBatch;
-
+        List<Texture2D> grids = new List<Texture2D>(16 * 16);
+        Rectangle selectedRect = new Rectangle();
+        SpriteFont font;
         public void bytetotex(byte[] b)
         {
             chr_map = new Texture2D(GraphicsDevice, 128, 128);
             Color[] imageData = new Color[128 * 128];
             //split into 1 
 
+             
+            int _index = 0;
 
-            string output = "";
-            int _index = 0; 
+            int cube_line = 0;
+            int cube_row = 0;
+
+            int line = 0;
+            int colum = 0;
+
             for (int i = 0; i <256; i++)
             {
                 for (int j = 0; j < 8; j++) 
@@ -56,7 +68,6 @@ namespace WinFormsGraphicsDevice
                     for (int k = 0; k < pat_bit.Length / 2; k++)
                     {
                         string bitstr = "";
-
                         if (pat_bit[k]) bitstr += "1";
                         else bitstr += "0";
                         if (pat_bit[k+8]) bitstr += "1";
@@ -81,32 +92,38 @@ namespace WinFormsGraphicsDevice
                                 break;
                         }
 
-                     //  output += high_bit[k].ToString();
+                        if (cube_row == 8)
+                        {
+                            cube_row = 0;
+                            cube_line++;
+                        }
 
-                        imageData[_index] = col;
+                        if (cube_line == 8)
+                        {
+                            cube_line = 0;
+                            colum++;
+
+                        }
+                         
+                        if (colum == 16)
+                        {
+                            colum = 0; 
+                            if(line <15)
+                            line++;
+
+                        }
+
+                        int caonvertidx = (7-cube_row) +128 * (cube_line) + 8 * colum + 1024 * line;
+                        imageData[caonvertidx] = col;
+
+                        cube_row++;
                         _index++;
                     }
                     
                 }
-                /*
-                byte[] fullbyte = new byte[2];
-                fullbyte[0] = b[i];
-                fullbyte[1] = b[i+8];
-                BitArray patt_bit = new BitArray(b[i]);
-                BitArray col_bit = new BitArray(b[i+1]);
-                ++i;
-                for (int j = 0; j < patt_bit.Length; i++)
-                {
-
-
-                    imageData[_index] = new Color(b[i], b[i], b[i]);
-                    ++_index;
-                }*/
-                
 
             }
 
-            System.Diagnostics.Debug.WriteLine("debug:" + output);
             chr_map.SetData<Color>(imageData);
         }
 
@@ -136,29 +153,102 @@ namespace WinFormsGraphicsDevice
         /// </summary>
         protected override void Initialize()
         {
+            content = new ContentManager(Services, "Content");
+            font = content.Load<SpriteFont>("hudFont");
+            Color[] imageData = new Color[8 * 8];
+            for (int i = 0; i < imageData.Length; i++)
+            {
+                imageData[i] = Color.Blue;
+                }
+            for (int i = 0; i < grids.Capacity ; i++)
+            {
+                Texture2D temp = new Texture2D(GraphicsDevice, 8, 8);
+                grids.Add(temp);
+                temp.SetData<Color>(imageData);
+            }
 
             spriteBatch = new SpriteBatch(GraphicsDevice); 
             // Hook the idle event to constantly redraw our animation.
-            Application.Idle += delegate { Invalidate(); };
+             System.Windows.Forms.Application.Idle += delegate { Invalidate(); };
             Texture2D t2d = new Texture2D(GraphicsDevice, 128, 128); 
         
         }
+        public Point GetMousePosition()
+        {
+           System.Drawing.Point p = PointToClient( System.Windows.Forms.Control.MousePosition);
+           return new Point(p.X, p.Y);
+        }
+        Point startPoint = new Point(-999, -999);
+        private void update()
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                if (startPoint.X == -999)
+                {
+                    selectedRect = Rectangle.Empty;
+                    startPoint.X = GetMousePosition().X;
+                    startPoint.Y = GetMousePosition().Y; 
+                    selectedRect.Location = startPoint;
+                }
+                int wid = (GetMousePosition().X - startPoint.X);
+                int hei = (GetMousePosition().Y - startPoint.Y);
+
+                if (wid >= 0)
+                    selectedRect.X = startPoint.X;
+                else
+                    selectedRect.X = GetMousePosition().X;
 
 
+                if (hei >= 0)
+                    selectedRect.Y = startPoint.Y;
+                else
+                    selectedRect.Y = GetMousePosition().Y; 
 
+                selectedRect.Width = Math.Abs(GetMousePosition().X - startPoint.X);
+                selectedRect.Height = Math.Abs(GetMousePosition().Y - startPoint.Y);
+            }
+            else
+            {
+                startPoint.X = -999;
+            }
+        }
+        
         /// <summary>
         /// Draws the control.
         /// </summary>
+        /// 
+        
         protected override void Draw()
-        {
+        { 
+            update();
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            if (chr_map!=null)
-            {
-                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            if (chr_map!=null) 
                 spriteBatch.Draw(chr_map, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
-                spriteBatch.End(); 
-            }
 
+
+            int grid_line = 0;
+            for (int i = 0; i < grids.Count; i++)
+            {
+                Vector2 pos = new Vector2(i % 16 * 16, grid_line*16);
+                int alpha = 0;
+                bool isSelected = false;
+                Rectangle  gridRec = new Rectangle((int)pos.X, (int)pos.Y, (int)grids[i].Bounds.Width*2, (int)grids[i].Bounds.Height*2);
+                
+                if(selectedRect.Intersects(gridRec)|| selectedRect.Contains(gridRec)) 
+                    alpha = 100;
+
+                spriteBatch.Draw(grids[i], pos, null, new Color(255, 255, 255, alpha), 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                if (i % 16 == 15)
+                    grid_line++;
+               if(i==19)
+                   spriteBatch.DrawString(font, "gridRec:" + gridRec.ToString(), new Vector2(1, 23), Color.White);
+            }
+            
+            spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
+            spriteBatch.End(); 
+
+              
              
         }
     }
