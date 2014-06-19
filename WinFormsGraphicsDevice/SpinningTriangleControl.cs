@@ -151,20 +151,7 @@ namespace WinFormsGraphicsDevice
 
 
         }
-
-        public static System.Drawing.Image Texture2Image(Texture2D texture)
-        {
-            System.Drawing.Image img;
-            using (MemoryStream MS = new MemoryStream())
-            {
-                texture.SaveAsPng(MS, texture.Width, texture.Height);
-                //Go To the  beginning of the stream.
-                MS.Seek(0, SeekOrigin.Begin);
-                //Create the image based on the stream.
-                img = System.Drawing.Bitmap.FromStream(MS);
-            }
-            return img;
-        }
+      
 
         int frameCount = 0;
         /// <summary>
@@ -248,6 +235,7 @@ namespace WinFormsGraphicsDevice
             spriteBatch.Draw(rect, coords, color);
         }
         Rectangle formatted = new Rectangle();
+        System.Drawing.Image tempImg = null;
         protected override void Draw()
         {
             update();
@@ -306,8 +294,14 @@ namespace WinFormsGraphicsDevice
            // spriteBatch.DrawString(font, " this.Bounds:" + this.Bounds.ToString(), new Vector2(0, 50), Color.White);
             spriteBatch.End();
             frameCount++;
-            if(frameCount %30 == 29)
-            _pb.Image = Texture2Image((Texture2D)clippedTex);
+            if (frameCount % 30 == 29)
+            {
+                if (clippedTex != null)
+                {
+
+                   _pb.Image =  TextureExtensions.TextureToPng(clippedTex, clippedTex.Width, clippedTex.Height);
+                }
+            }
              
 
         }
