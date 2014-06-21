@@ -36,9 +36,12 @@ namespace WinFormsGraphicsDevice
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cHRAsTileSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chrViewControl1 = new WinFormsGraphicsDevice.CHRViewControl();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.mapEditControl2 = new WinFormsGraphicsDevice.MapEditControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -47,9 +50,7 @@ namespace WinFormsGraphicsDevice
             this.button2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.paletteControl1 = new WinFormsGraphicsDevice.PaletteControl();
-            this.spinningTriangleControl1 = new WinFormsGraphicsDevice.CHRViewControl();
             this.colorControl1 = new WinFormsGraphicsDevice.ColorControl();
-            this.mapEditControl1 = new WinFormsGraphicsDevice.MapEditControl();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -95,11 +96,13 @@ namespace WinFormsGraphicsDevice
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cHRAsTileSetToolStripMenuItem});
+            this.cHRAsTileSetToolStripMenuItem,
+            this.paletteToolStripMenuItem});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(60, 21);
             this.importToolStripMenuItem.Text = "Import";
@@ -111,15 +114,31 @@ namespace WinFormsGraphicsDevice
             this.cHRAsTileSetToolStripMenuItem.Text = "CHR as tile set";
             this.cHRAsTileSetToolStripMenuItem.Click += new System.EventHandler(this.cHRAsTileSetToolStripMenuItem_Click);
             // 
+            // paletteToolStripMenuItem
+            // 
+            this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
+            this.paletteToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.paletteToolStripMenuItem.Text = "Palette";
+            this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
+            // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.spinningTriangleControl1);
+            this.groupBox1.Controls.Add(this.chrViewControl1);
             this.groupBox1.Location = new System.Drawing.Point(524, 27);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(268, 292);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "CHR Tile Set";
+            // 
+            // chrViewControl1
+            // 
+            this.chrViewControl1.Location = new System.Drawing.Point(5, 21);
+            this.chrViewControl1.Name = "chrViewControl1";
+            this.chrViewControl1.SetPictureBox = this.pictureBox1;
+            this.chrViewControl1.Size = new System.Drawing.Size(256, 256);
+            this.chrViewControl1.TabIndex = 0;
+            this.chrViewControl1.Text = "chrViewControl1";
             // 
             // pictureBox1
             // 
@@ -134,13 +153,21 @@ namespace WinFormsGraphicsDevice
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.mapEditControl1);
+            this.groupBox2.Controls.Add(this.mapEditControl2);
             this.groupBox2.Location = new System.Drawing.Point(0, 28);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(518, 715);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Map Editor";
+            // 
+            // mapEditControl2
+            // 
+            this.mapEditControl2.Location = new System.Drawing.Point(7, 20);
+            this.mapEditControl2.Name = "mapEditControl2";
+            this.mapEditControl2.Size = new System.Drawing.Size(505, 688);
+            this.mapEditControl2.TabIndex = 0;
+            this.mapEditControl2.Text = "mapEditControl2";
             // 
             // groupBox3
             // 
@@ -214,19 +241,10 @@ namespace WinFormsGraphicsDevice
             // 
             this.paletteControl1.Location = new System.Drawing.Point(531, 647);
             this.paletteControl1.Name = "paletteControl1";
-            this.paletteControl1.SetCHRView = this.spinningTriangleControl1;
+            this.paletteControl1.SetCHRView = this.chrViewControl1;
             this.paletteControl1.Size = new System.Drawing.Size(256, 96);
             this.paletteControl1.TabIndex = 14;
             this.paletteControl1.Text = "paletteControl1";
-            // 
-            // spinningTriangleControl1
-            // 
-            this.spinningTriangleControl1.Location = new System.Drawing.Point(7, 21);
-            this.spinningTriangleControl1.Name = "spinningTriangleControl1";
-            this.spinningTriangleControl1.SetPictureBox = this.pictureBox1;
-            this.spinningTriangleControl1.Size = new System.Drawing.Size(256, 256);
-            this.spinningTriangleControl1.TabIndex = 0;
-            this.spinningTriangleControl1.Text = "spinningTriangleControl1";
             // 
             // colorControl1
             // 
@@ -236,14 +254,6 @@ namespace WinFormsGraphicsDevice
             this.colorControl1.Size = new System.Drawing.Size(256, 96);
             this.colorControl1.TabIndex = 12;
             this.colorControl1.Text = "paletteControl1";
-            // 
-            // mapEditControl1
-            // 
-            this.mapEditControl1.Location = new System.Drawing.Point(7, 20);
-            this.mapEditControl1.Name = "mapEditControl1";
-            this.mapEditControl1.Size = new System.Drawing.Size(505, 688);
-            this.mapEditControl1.TabIndex = 0;
-            this.mapEditControl1.Text = "mapEditControl1";
             // 
             // MainForm
             // 
@@ -261,9 +271,11 @@ namespace WinFormsGraphicsDevice
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "WinForms Graphics Device";
+            this.Text = "Multiple Console Map Editor";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -298,6 +310,9 @@ namespace WinFormsGraphicsDevice
         private System.Windows.Forms.Label label2;
         private PaletteControl paletteControl1;
         private MapEditControl mapEditControl1;
+        private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
+        private CHRViewControl chrViewControl1;
+        private MapEditControl mapEditControl2;
 
     }
 }

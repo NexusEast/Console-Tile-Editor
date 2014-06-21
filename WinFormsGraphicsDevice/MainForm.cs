@@ -92,11 +92,12 @@ namespace WinFormsGraphicsDevice
 
          */
         }
-        private string SelectTextFile(string initialDirectory)
+        
+        private string SelectTextFile(string initialDirectory,string file_format)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter =
-               "CHR files (*.CHR)|*.CHR|All files (*.*)|*.*";
+            dialog.Filter =file_format+
+               "  files (*." + file_format + ")|*." + file_format + "|All files (*.*)|*.*";
             dialog.InitialDirectory = initialDirectory;
             dialog.Title = "Select a text file";
             return (dialog.ShowDialog() == DialogResult.OK)
@@ -116,7 +117,7 @@ namespace WinFormsGraphicsDevice
                 }
                 else return;
             }
-            string file_path = SelectTextFile("\\");
+            string file_path = SelectTextFile("\\","CHR");
             if (file_path != null)
             {
                 CHR_BUFFER = ConvertFileToByteArray(file_path);
@@ -223,6 +224,28 @@ namespace WinFormsGraphicsDevice
                 }
                 total_image_idx--;
             }
+        }
+
+        private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string file_path = SelectTextFile("\\", "PAL");
+            if (file_path != null)
+            {
+                byte[,] pal = new byte[4, 4];
+                byte[] buf = ConvertFileToByteArray(file_path);
+                for (int i = 0; i < 16; i++)
+                {
+                    pal[(int)i/4,i%4] = buf[i];
+                }
+                paletteControl1.bgPal = pal;
+
+
+            }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
 
