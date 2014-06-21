@@ -25,7 +25,7 @@ namespace WinFormsGraphicsDevice
     using GdiColor = System.Drawing.Color;
     using XnaColor = Microsoft.Xna.Framework.Color;
 
-    
+
     /// <summary>
     /// Custom form provides the main user interface for the program.
     /// In this sample we used the designer to add a splitter pane to the form,
@@ -43,7 +43,7 @@ namespace WinFormsGraphicsDevice
         {
             ShowScrollBar((IntPtr)listView1.Handle.ToInt64(),
                 SB_VERT
-                ,false);
+                , false);
         }
         public MainForm()
         {
@@ -77,21 +77,21 @@ namespace WinFormsGraphicsDevice
 
         }
         public static Bitmap byteArrayToImage(byte[] byteArrayIn)
-            {
-                ImageConverter ic = new ImageConverter();
-                Image img = (Image)ic.ConvertFrom(byteArrayIn);
-                return new Bitmap(img); 
-               /* if (byteArrayIn == null)
-                    return null;
-                using (System.IO.MemoryStream ms = new System.IO.MemoryStream(byteArrayIn))
-                {
-                    System.Drawing.Image returnImage = System.Drawing.Image.FromStream(ms);
-                    ms.Flush();
-                    return returnImage;
-                }
+        {
+            ImageConverter ic = new ImageConverter();
+            Image img = (Image)ic.ConvertFrom(byteArrayIn);
+            return new Bitmap(img);
+            /* if (byteArrayIn == null)
+                 return null;
+             using (System.IO.MemoryStream ms = new System.IO.MemoryStream(byteArrayIn))
+             {
+                 System.Drawing.Image returnImage = System.Drawing.Image.FromStream(ms);
+                 ms.Flush();
+                 return returnImage;
+             }
 
-            */
-            }
+         */
+        }
         private string SelectTextFile(string initialDirectory)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -102,16 +102,16 @@ namespace WinFormsGraphicsDevice
             return (dialog.ShowDialog() == DialogResult.OK)
                ? dialog.FileName : null;
         }
-        public byte[] CHR_BUFFER = null; 
+        public byte[] CHR_BUFFER = null;
         private void cHRAsTileSetToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             string file_path = SelectTextFile("\\");
             if (file_path != null)
             {
                 CHR_BUFFER = ConvertFileToByteArray(file_path);
-                spinningTriangleControl.bytetotex(CHR_BUFFER);
+                this.spinningTriangleControl1.bytetotex(CHR_BUFFER);
 
-                
+
             }
         }
 
@@ -122,9 +122,9 @@ namespace WinFormsGraphicsDevice
 
         private void pictureBox1_Click(object sender, System.EventArgs e)
         {
-            
-        }
 
+        }
+       
         int total_image_idx = 0;
         static Image FixedSize(Image imgPhoto, int Width, int Height)
         {
@@ -134,7 +134,6 @@ namespace WinFormsGraphicsDevice
             int sourceY = 0;
             int destX = 0;
             int destY = 0;
-
             float nPercent = 0;
             float nPercentW = 0;
             float nPercentH = 0;
@@ -177,7 +176,7 @@ namespace WinFormsGraphicsDevice
         }
         private void button1_Click(object sender, System.EventArgs e)
         {
-             
+
             imageList1.Images.Add(FixedSize(pictureBox1.Image, 32, 32));
             ListViewItem item = new ListViewItem();
             item.ImageIndex = total_image_idx;
@@ -186,7 +185,23 @@ namespace WinFormsGraphicsDevice
 
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)
+            {
 
-      
+                int idx = listView1.SelectedItems[0].ImageIndex;
+                imageList1.Images.RemoveAt(idx);
+                listView1.Items.RemoveAt(idx);
+                for (int i = idx+1; i < listView1.Items.Count; i++)
+                {
+                    listView1.Items[i].ImageIndex--;
+                }
+                total_image_idx--;
+            }
+        }
+
+
+
     }
 }

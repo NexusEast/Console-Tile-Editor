@@ -17,7 +17,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using System.IO; 
+using System.IO;
+using System.ComponentModel; 
 #endregion
 
 namespace WinFormsGraphicsDevice
@@ -39,6 +40,22 @@ namespace WinFormsGraphicsDevice
         Rectangle selectedRect = new Rectangle();
         SpriteFont font;
         System.Windows.Forms.PictureBox _pb;
+
+        [Description("SetPictureBox"),
+        Category("Data"),
+        DefaultValue(null),
+        Browsable(true)]
+        public System.Windows.Forms.PictureBox SetPictureBox
+        {
+            get
+            {
+                return _pb;
+            }
+            set
+            {
+                _pb = value;
+            }
+        }
         public void bytetotex(byte[] b)
         {
             chr_map = new Texture2D(GraphicsDevice, 128, 128);
@@ -129,10 +146,10 @@ namespace WinFormsGraphicsDevice
             chr_map.SetData<Color>(imageData);
         }
 
-        public SpinningTriangleControl(System.Windows.Forms.PictureBox pb)
+        /*public SpinningTriangleControl(System.Windows.Forms.PictureBox pb)
         {
             _pb = pb;
-        }
+        }*/
         public void BitmapToTexture2D(System.Drawing.Bitmap image)
         {
             // Buffer size is size of color array multiplied by 4 because   
@@ -160,7 +177,7 @@ namespace WinFormsGraphicsDevice
         protected override void Initialize()
         {
             content = new ContentManager(Services, "Content");
-            font = content.Load<SpriteFont>("hudFont");
+            font = content.Load<SpriteFont>("EMUFONT");
             Color[] imageData = new Color[8 * 8];
             for (int i = 0; i < imageData.Length; i++)
             {
