@@ -17,7 +17,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using System.IO; 
+using System.IO;
+using System.ComponentModel; 
 #endregion
 
 namespace WinFormsGraphicsDevice
@@ -33,31 +34,45 @@ namespace WinFormsGraphicsDevice
     {
 
         ContentManager content;
-        SpriteBatch spriteBatch;
-        int size = 16;
+        SpriteBatch spriteBatch; 
         int frameCount = 0;
+        int size = 32;
         SpriteFont font;
-        List<Texture2D> col_rt = new List<Texture2D>();
+        List<RenderTarget2D> col_rt = new List<RenderTarget2D>();
+        CHRViewControl chr_view;
+        Texture2D sel, sel_col;
+        byte[] selected_pal = { 15, 0, 16, 48 };
+        [Description("SetCHRView"),
+      Category("Data"),
+      DefaultValue(null),
+      Browsable(true)]
+        public CHRViewControl SetCHRView
+        {
+            get
+            {
+                return chr_view;
+            }
+            set
+            {
+                chr_view = value;
+            }
+        }
+
+         byte[,] bgPal={{15,0,16,48},{15,1,33,49},{15,6,22,38},{15,9,25,41}};
         /// <summary>
         /// Initializes the control.
         /// </summary>
         protected override void Initialize()
         {
+            for (int i = 0; i < 16; i++)
+            {
+                col_rt.Add(new RenderTarget2D(GraphicsDevice,size,size));
+            }
             content = new ContentManager(Services, "Content");
             font = content.Load<SpriteFont>("EMUFONT");
-
-               for (int i   = 0; i < palette.Length; i++)
-               {
-                   Texture2D tex = new Texture2D(GraphicsDevice, size, size);
-                   Color[] data = new Color[size * size];
-                   for (int j = 0; j < data.Length; j++)
-			        {
-			            data[j] = palette[i];
-			        }
-                   tex.SetData<Color>(data);
-                   col_rt.Add(tex);
-               }
-
+            sel = content.Load<Texture2D>("sel");
+            sel_col = content.Load<Texture2D>("sel_col");
+ 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // Hook the idle event to constantly redraw our animation.
             System.Windows.Forms.Application.Idle += delegate { Invalidate(); }; 
@@ -67,104 +82,102 @@ namespace WinFormsGraphicsDevice
         {
             System.Drawing.Point p = PointToClient(System.Windows.Forms.Control.MousePosition);
             return new Point(p.X, p.Y);
-        }
-        Color selectedColor = new Color();
+        } 
         private void update()
         {
             if (!ClientRectangle.Contains(PointToClient(System.Windows.Forms.Control.MousePosition)))
             {
                 return;
             }
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                selectedColor = palette[chosenIndex];
-            }
         }
-        Color[] palette = { new Color(124,124,124),
-new Color(0,0,252),
-new Color(0,0,188),
-new Color(68,40,188),
-new Color(148,0,132),
-new Color(168,0,32),
-new Color(168,16,0),
-new Color(136,20,0),
-new Color(80,48,0),
-new Color(0,120,0),
-new Color(0,104,0),
-new Color(0,88,0),
-new Color(0,64,88),
-new Color(0,0,0),
-new Color(0,0,0),
-new Color(0,0,0),
-new Color(188,188,188),
-new Color(0,120,248),
-new Color(0,88,248),
-new Color(104,68,252),
-new Color(216,0,204),
-new Color(228,0,88),
-new Color(248,56,0),
-new Color(228,92,16),
-new Color(172,124,0),
-new Color(0,184,0),
-new Color(0,168,0),
-new Color(0,168,68),
-new Color(0,136,136),
-new Color(0,0,0),
-new Color(0,0,0),
-new Color(0,0,0),
-new Color(248,248,248),
-new Color(60,188,252),
-new Color(104,136,252),
-new Color(152,120,248),
-new Color(248,120,248),
-new Color(248,88,152),
-new Color(248,120,88),
-new Color(252,160,68),
-new Color(248,184,0),
-new Color(184,248,24),
-new Color(88,216,84),
-new Color(88,248,152),
-new Color(0,232,216),
-new Color(120,120,120),
-new Color(0,0,0),
-new Color(0,0,0),
-new Color(252,252,252),
-new Color(164,228,252),
-new Color(184,184,248),
-new Color(216,184,248),
-new Color(248,184,248),
-new Color(248,164,192),
-new Color(240,208,176),
-new Color(252,224,168),
-new Color(248,216,120),
-new Color(216,248,120),
-new Color(184,248,184),
-new Color(184,248,216),
-new Color(0,252,252),
-new Color(248,216,248),
-new Color(0,0,0),
-new Color(0,0,0),
-    };
 
-        int baba = 16;
-        int chosenIndex = 0;
-        protected override void Draw()
-        { 
-            update();
-            GraphicsDevice.Clear(selectedColor);
-            spriteBatch.Begin();
-            int lines = 0;
-            for (int i = 0; i < col_rt.Count; i++)
+        Vector2 sel_pos = new Vector2(0, 32);
+        Vector2 offset = new Vector2(-6, -5);
+        Vector2 offset_col = new Vector2(-5, -4);
+        Vector2 sel_col_pos = new Vector2(0, 32);
+        int selectedIdx = 0;
+
+        public void updatePalette(byte col)
+        {
+            if (selectedIdx % 4 == 0)
             {
-                Rectangle rec = new Rectangle(i % baba * size, lines * size, size, size);
-                if(rec.Contains(GetMousePosition())) 
-                    chosenIndex =i;
-
-                spriteBatch.Draw(col_rt[i], new Vector2(i % baba * size, lines * size), Color.White);
-                if (i % baba == baba-1) lines++;
+                bgPal[0, selectedIdx % 4] = col;
+                bgPal[1, selectedIdx % 4] = col;
+                bgPal[2, selectedIdx % 4] = col;
+                bgPal[3, selectedIdx % 4] = col;
             }
-            spriteBatch.DrawString(font, "SELECTED COLOR:", new Vector2(0, 80), Color.Black);
-            spriteBatch.DrawString(font, "SELECTED COLOR:", new Vector2(1, 81), Color.White);
+            else
+            bgPal[(int)selectedIdx / 4, selectedIdx % 4] = col;
+
+          //  chr_view.updatePalette(selected_pal);
+        }
+        protected override void Draw()
+        {
+            frameCount++;
+            update();
+            //reset color
+
+
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                {
+
+                    GraphicsDevice.SetRenderTarget(col_rt[i * 4 + j]);
+                    GraphicsDevice.Clear(ColorControl.palette[bgPal[i,j]]);
+
+                    GraphicsDevice.SetRenderTarget(null);
+                }
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "PALETTE:", new Vector2(6,6), Color.Black);
+            spriteBatch.DrawString(font, "PALETTE:", new Vector2(4, 4), Color.White);
+
+            int line = 0;
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                {
+                    int idx =i * 4 + j;
+                    Rectangle rec = new Rectangle(idx % 8 * size, line * size + 32, size, size);
+                    if (rec.Contains(GetMousePosition()) && Mouse.GetState().LeftButton== ButtonState.Pressed)
+                    {
+                        sel_pos = new Vector2(idx % 8 * size, line * size + 32);
+                        selectedIdx = idx;
+                        if (idx >= 0 && idx < 4)
+                        {
+                            sel_col_pos = new Vector2(0 % 8 * size, line * size + 32);
+                        }
+                        if (idx >= 4 && idx < 8)
+                        {
+                            sel_col_pos = new Vector2(4 % 8 * size, line * size + 32);
+                        }
+                        if (idx >= 8 && idx < 12)
+                        {
+                            sel_col_pos = new Vector2(8 % 8 * size, line * size + 32);
+                        }
+                        if (idx >= 12 && idx < 16)
+                        {
+                            sel_col_pos = new Vector2(12 % 8 * size, line * size + 32);
+                        }
+
+                       
+                    }
+                    for (int k = 0; k < 4; k++)
+                    {
+                        selected_pal[k] = bgPal[selectedIdx / 4, k];
+                    }
+                     
+                    spriteBatch.Draw(col_rt[idx],new Vector2(idx%8*size,line*size + 32),Color.White);
+                    if(idx%8==7)
+                        line++;
+                }
+          
+            if (frameCount % 500 == 449)
+            {
+                chr_view.updatePalette(selected_pal);
+            }
+            spriteBatch.Draw(sel_col, Vector2.Add(offset_col, sel_col_pos), Color.White);
+            spriteBatch.Draw(sel, Vector2.Add(offset, sel_pos), Color.White);
+
             spriteBatch.End();
 
 

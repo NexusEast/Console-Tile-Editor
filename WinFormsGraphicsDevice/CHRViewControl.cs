@@ -30,7 +30,7 @@ namespace WinFormsGraphicsDevice
     /// event, using this to invalidate the control, which will cause the animation
     /// to constantly redraw.
     /// </summary>
-    class SpinningTriangleControl : GraphicsDeviceControl
+    class CHRViewControl : GraphicsDeviceControl
     {
 
         ContentManager content;
@@ -39,7 +39,9 @@ namespace WinFormsGraphicsDevice
         List<Texture2D> grids = new List<Texture2D>(16 * 16);
         Rectangle selectedRect = new Rectangle();
         SpriteFont font;
+        RenderTarget2D monotex;
         System.Windows.Forms.PictureBox _pb;
+        byte[] chr_buffer;
 
         [Description("SetPictureBox"),
         Category("Data"),
@@ -56,10 +58,28 @@ namespace WinFormsGraphicsDevice
                 _pb = value;
             }
         }
+
+        Color[] paletteCol = {
+                                 Color.Black,
+                                 new Color(80, 80, 80),
+                                 new Color(150, 150, 150),
+                                 new Color(255, 255, 255)
+                             };
+        public void updatePalette(byte[] pal)
+        {
+            //update col first
+            for (int i = 0; i < 4; i++)
+                paletteCol[i] = ColorControl.palette[pal[i]];
+            bytetotex(chr_buffer);
+        }
+
         public void bytetotex(byte[] b)
         {
+            if (b == null) return;
+            chr_buffer = (byte[])b.Clone();
             chr_map = new Texture2D(GraphicsDevice, 128, 128);
             Color[] imageData = new Color[128 * 128];
+            Color[] imageDataMono = new Color[128 * 128];
             //split into 1 
 
 
@@ -93,19 +113,24 @@ namespace WinFormsGraphicsDevice
                         else bitstr += "0";
 
                         Color col = new Color();
+                        Color col_mono = new Color();
                         switch (bitstr)
                         {
                             case "00":
-                                col = Color.Black;
+                                col = paletteCol[0];
+                                col_mono = Color.Black;
                                 break;
                             case "01":
-                                col = new Color(80, 80, 80);
+                                col = paletteCol[1];
+                                col_mono = new Color(80, 80, 80);
                                 break;
                             case "10":
-                                col = new Color(150, 150, 150);
+                                col = paletteCol[2];
+                                col_mono = new Color(150, 150, 150);
                                 break;
                             case "11":
-                                col = new Color(255, 255, 255);
+                                col = paletteCol[3];
+                                col_mono = new Color(255, 255, 255);
                                 break;
                             default:
                                 break;
@@ -134,7 +159,7 @@ namespace WinFormsGraphicsDevice
 
                         int caonvertidx = (7 - cube_row) + 128 * (cube_line) + 8 * colum + 1024 * line;
                         imageData[caonvertidx] = col;
-
+                        imageDataMono[caonvertidx] = col_mono;
                         cube_row++;
                         _index++;
                     }
@@ -142,7 +167,7 @@ namespace WinFormsGraphicsDevice
                 }
 
             }
-
+            monotex.SetData<Color>(imageDataMono);
             chr_map.SetData<Color>(imageData);
         }
 
@@ -176,6 +201,7 @@ namespace WinFormsGraphicsDevice
         /// </summary>
         protected override void Initialize()
         {
+            monotex = new RenderTarget2D(GraphicsDevice, 128, 128);
             content = new ContentManager(Services, "Content");
             font = content.Load<SpriteFont>("EMUFONT");
             Color[] imageData = new Color[8 * 8];
@@ -192,8 +218,7 @@ namespace WinFormsGraphicsDevice
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             // Hook the idle event to constantly redraw our animation.
-            System.Windows.Forms.Application.Idle += delegate { Invalidate(); };
-            Texture2D t2d = new Texture2D(GraphicsDevice, 128, 128);
+            System.Windows.Forms.Application.Idle += delegate { Invalidate(); }; 
 
         }
         public Point GetMousePosition()
@@ -264,7 +289,7 @@ namespace WinFormsGraphicsDevice
                  GraphicsDevice.Clear(Color.Black);
                  spriteBatch.Begin();
                  if (chr_map != null)
-                     spriteBatch.Draw(chr_map, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width/2, formatted.Height/2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                     spriteBatch.Draw(monotex, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width / 2, formatted.Height / 2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
                  spriteBatch.End();
                  
                  GraphicsDevice.SetRenderTarget(null);

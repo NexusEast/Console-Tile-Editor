@@ -105,6 +105,17 @@ namespace WinFormsGraphicsDevice
         public byte[] CHR_BUFFER = null;
         private void cHRAsTileSetToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
+            if (imageList1.Images.Count > 0)
+            {
+                if (MessageBox.Show("Importing new tileset will erase all metatile groups.\n Do you really want to do this?", "Caution", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+                { 
+                        imageList1.Images.Clear();
+                        listView1.Items.Clear();
+                        pictureBox1.Image = null;
+                        total_image_idx = 0; 
+                }
+                else return;
+            }
             string file_path = SelectTextFile("\\");
             if (file_path != null)
             {
@@ -174,9 +185,22 @@ namespace WinFormsGraphicsDevice
             grPhoto.Dispose();
             return bmPhoto;
         }
-        private void button1_Click(object sender, System.EventArgs e)
+        public Bitmap GrayScale(Bitmap Bmp)
         {
+            int rgb;
+            Color c;
 
+            for (int y = 0; y < Bmp.Height; y++)
+                for (int x = 0; x < Bmp.Width; x++)
+                {
+                    c = Bmp.GetPixel(x, y);
+                    rgb = (int)((c.R + c.G + c.B) / 3);
+                    Bmp.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                }
+            return Bmp;
+        }
+        private void button1_Click(object sender, System.EventArgs e)
+        { 
             imageList1.Images.Add(FixedSize(pictureBox1.Image, 32, 32));
             ListViewItem item = new ListViewItem();
             item.ImageIndex = total_image_idx;

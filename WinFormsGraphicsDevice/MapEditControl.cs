@@ -22,7 +22,7 @@ namespace WinFormsGraphicsDevice
     /// ContentManager, then uses a SpriteBatch to draw text. The control is not
     /// animated, so it only redraws itself in response to WinForms paint messages.
     /// </summary>
-    class SpriteFontControl : GraphicsDeviceControl
+    class MapEditControl : GraphicsDeviceControl
     {
         ContentManager content;
         SpriteBatch spriteBatch;
@@ -39,7 +39,7 @@ namespace WinFormsGraphicsDevice
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            font = content.Load<SpriteFont>("hudFont");
+            font = content.Load<SpriteFont>("EMUFONT");
         }
 
 
@@ -62,17 +62,7 @@ namespace WinFormsGraphicsDevice
         /// </summary>
         protected override void Draw()
         {
-            const string message = "Hello, World!\n" +
-                                   "\n" +
-                                   "I'm an XNA Framework GraphicsDevice,\n" +
-                                   "running inside a WinForms application.\n" +
-                                   "\n" +
-                                   "This text is drawn using SpriteBatch,\n" +
-                                   "with a SpriteFont that was loaded\n" +
-                                   "through the ContentManager.\n" +
-                                   "\n" +
-                                   "The pane to my right contains a\n" +
-                                   "spinning 3D triangle.";
+            const string message = "I AM ERROR!\n";
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 

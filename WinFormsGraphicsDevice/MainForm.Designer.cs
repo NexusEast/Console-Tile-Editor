@@ -47,10 +47,13 @@ namespace WinFormsGraphicsDevice
             this.button2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.paletteControl1 = new WinFormsGraphicsDevice.PaletteControl();
-            this.spinningTriangleControl1 = new WinFormsGraphicsDevice.SpinningTriangleControl();
+            this.spinningTriangleControl1 = new WinFormsGraphicsDevice.CHRViewControl();
+            this.colorControl1 = new WinFormsGraphicsDevice.ColorControl();
+            this.mapEditControl1 = new WinFormsGraphicsDevice.MapEditControl();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,9 +134,10 @@ namespace WinFormsGraphicsDevice
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.mapEditControl1);
             this.groupBox2.Location = new System.Drawing.Point(0, 28);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(518, 488);
+            this.groupBox2.Size = new System.Drawing.Size(518, 715);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Map Editor";
@@ -208,10 +212,11 @@ namespace WinFormsGraphicsDevice
             // 
             // paletteControl1
             // 
-            this.paletteControl1.Location = new System.Drawing.Point(531, 537);
+            this.paletteControl1.Location = new System.Drawing.Point(531, 647);
             this.paletteControl1.Name = "paletteControl1";
-            this.paletteControl1.Size = new System.Drawing.Size(249, 104);
-            this.paletteControl1.TabIndex = 12;
+            this.paletteControl1.SetCHRView = this.spinningTriangleControl1;
+            this.paletteControl1.Size = new System.Drawing.Size(256, 96);
+            this.paletteControl1.TabIndex = 14;
             this.paletteControl1.Text = "paletteControl1";
             // 
             // spinningTriangleControl1
@@ -223,13 +228,31 @@ namespace WinFormsGraphicsDevice
             this.spinningTriangleControl1.TabIndex = 0;
             this.spinningTriangleControl1.Text = "spinningTriangleControl1";
             // 
+            // colorControl1
+            // 
+            this.colorControl1.Location = new System.Drawing.Point(531, 537);
+            this.colorControl1.Name = "colorControl1";
+            this.colorControl1.SetPaletteView = this.paletteControl1;
+            this.colorControl1.Size = new System.Drawing.Size(256, 96);
+            this.colorControl1.TabIndex = 12;
+            this.colorControl1.Text = "paletteControl1";
+            // 
+            // mapEditControl1
+            // 
+            this.mapEditControl1.Location = new System.Drawing.Point(7, 20);
+            this.mapEditControl1.Name = "mapEditControl1";
+            this.mapEditControl1.Size = new System.Drawing.Size(505, 688);
+            this.mapEditControl1.TabIndex = 0;
+            this.mapEditControl1.Text = "mapEditControl1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(792, 911);
-            this.Controls.Add(this.label2);
+            this.ClientSize = new System.Drawing.Size(792, 748);
             this.Controls.Add(this.paletteControl1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.colorControl1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listView1);
@@ -245,6 +268,7 @@ namespace WinFormsGraphicsDevice
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -269,9 +293,11 @@ namespace WinFormsGraphicsDevice
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ImageList imageList1;
-        private PaletteControl paletteControl1;
-        private SpinningTriangleControl spinningTriangleControl1;
+        private ColorControl colorControl1;
+        private CHRViewControl spinningTriangleControl1;
         private System.Windows.Forms.Label label2;
+        private PaletteControl paletteControl1;
+        private MapEditControl mapEditControl1;
 
     }
 }
