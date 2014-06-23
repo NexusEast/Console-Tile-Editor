@@ -199,6 +199,8 @@ namespace WinFormsGraphicsDevice
         /// <summary>
         /// Initializes the control.
         /// </summary>
+        /// 
+        public List<byte> selected_metatile = new List<byte>();
         protected override void Initialize()
         {
             monotex = new RenderTarget2D(GraphicsDevice, 128, 128);
@@ -278,21 +280,40 @@ namespace WinFormsGraphicsDevice
         }
         Rectangle formatted = new Rectangle();
         System.Drawing.Image tempImg = null;
+
+        public RenderTarget2D ColoredClipedTex; 
+
         protected override void Draw()
         {
             update();
             RenderTarget2D clippedTex = null;
             if (formatted != Rectangle.Empty)
             {
-                  clippedTex = new RenderTarget2D(GraphicsDevice, formatted.Width, formatted.Height);
-                 GraphicsDevice.SetRenderTarget(clippedTex);
-                 GraphicsDevice.Clear(Color.Black);
-                 spriteBatch.Begin();
-                 if (chr_map != null)
-                     spriteBatch.Draw(monotex, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width / 2, formatted.Height / 2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
-                 spriteBatch.End();
-                 
-                 GraphicsDevice.SetRenderTarget(null);
+                clippedTex = new RenderTarget2D(GraphicsDevice, formatted.Width, formatted.Height);
+                ColoredClipedTex = new RenderTarget2D(GraphicsDevice, formatted.Width, formatted.Height);
+
+
+                GraphicsDevice.SetRenderTarget(clippedTex);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin();
+                if (monotex != null)
+                    spriteBatch.Draw(monotex, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width / 2, formatted.Height / 2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+
+
+
+                GraphicsDevice.SetRenderTarget(ColoredClipedTex);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin();
+                if (chr_map != null)
+                    spriteBatch.Draw(chr_map, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width / 2, formatted.Height / 2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+
+
             }
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -305,6 +326,7 @@ namespace WinFormsGraphicsDevice
             Point minPos = new Point(-1, -1);
             Point maxPos = new Point(-1, -1); 
             int lastIdx = -1;
+            selected_metatile.Clear();
             for (int i = 0; i < grids.Count; i++)
             {
                 Vector2 pos = new Vector2(i % 16 * 16, grid_line * 16);
@@ -316,6 +338,7 @@ namespace WinFormsGraphicsDevice
                         minPos = gridRec.Location;
                     maxPos = gridRec.Location;
                     spriteBatch.Draw(grids[i], pos, null, new Color(255, 255, 255, 100), 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
+                    selected_metatile.Add((byte)i);
                 }
 
 
@@ -341,7 +364,7 @@ namespace WinFormsGraphicsDevice
                 if (clippedTex != null)
                 {
 
-                   _pb.Image =  TextureExtensions.TextureToPng(clippedTex, clippedTex.Width, clippedTex.Height);
+                   _pb.Image =  TextureExtensions.TextureToPng(clippedTex, clippedTex.Width, clippedTex.Height); 
                 }
             }
              

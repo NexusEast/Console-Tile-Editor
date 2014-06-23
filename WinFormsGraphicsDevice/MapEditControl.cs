@@ -1,6 +1,6 @@
 #region File Description
 //-----------------------------------------------------------------------------
-// SpriteFontControl.cs
+// PaletteControl.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
@@ -8,67 +8,131 @@
 #endregion
 
 #region Using Statements
+using System.Diagnostics;
+//using System.Windows.Forms;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections;
+using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
+using System.IO;
+using System.ComponentModel;
 #endregion
 
 namespace WinFormsGraphicsDevice
 {
     /// <summary>
     /// Example control inherits from GraphicsDeviceControl, which allows it to
-    /// render using a GraphicsDevice. This control shows how to use ContentManager
-    /// inside a WinForms application. It loads a SpriteFont object through the
-    /// ContentManager, then uses a SpriteBatch to draw text. The control is not
-    /// animated, so it only redraws itself in response to WinForms paint messages.
+    /// render using a GraphicsDevice. This control shows how to draw animating
+    /// 3D graphics inside a WinForms application. It hooks the Application.Idle
+    /// event, using this to invalidate the control, which will cause the animation
+    /// to constantly redraw.
     /// </summary>
     class MapEditControl : GraphicsDeviceControl
     {
+
         ContentManager content;
         SpriteBatch spriteBatch;
+        int size = 16;
+        public static float scale = 1;
+        int frameCount = 0;
         SpriteFont font;
-
+        List<Texture2D> col_rt = new List<Texture2D>();
+        byte[,] map_data = null;
+        float[,] map_bgCol = null;
+        CHRViewControl chr_view;
+        Texture2D cell = null;
+        [Description("SetCHRView"),
+      Category("Data"),
+      DefaultValue(null),
+      Browsable(true)]
+        public CHRViewControl SetCHRView
+        {
+            get
+            {
+                return chr_view;
+            }
+            set
+            {
+                chr_view = value;
+            }
+        }
 
         /// <summary>
-        /// Initializes the control, creating the ContentManager
-        /// and using it to load a SpriteFont.
+        /// Initializes the control.
         /// </summary>
         protected override void Initialize()
         {
+            map_data = new byte[MapSize.map_size[0], MapSize.map_size[1]];
+            map_bgCol = new float[MapSize.map_size[0], MapSize.map_size[1]];
+
+            for (int i = 0; i < MapSize.map_size[0]; i++)
+                for (int j = 0; j < MapSize.map_size[1]; j++)
+            {
+                map_bgCol[i, j] = 0.1f;
+            }
             content = new ContentManager(Services, "Content");
+            font = content.Load<SpriteFont>("EMUFONT");
+            cell = content.Load<Texture2D>("cell");
+            
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            // Hook the idle event to constantly redraw our animation.
+            System.Windows.Forms.Application.Idle += delegate { Invalidate(); };
 
-            font = content.Load<SpriteFont>("EMUFONT");
         }
-
-
-        /// <summary>
-        /// Disposes the control, unloading the ContentManager.
-        /// </summary>
-        protected override void Dispose(bool disposing)
+        public Point GetMousePosition()
         {
-            if (disposing)
-            {
-                content.Unload();
-            }
-
-            base.Dispose(disposing);
+            System.Drawing.Point p = PointToClient(System.Windows.Forms.Control.MousePosition);
+            return new Point(p.X, p.Y);
         }
 
+        
+        private void update()
+        {
+            if (!ClientRectangle.Contains(PointToClient(System.Windows.Forms.Control.MousePosition)))
+            {
+                if (this.Focused)
+                   System.Windows.Forms.SendKeys.Send("{TAB}");
+                return;
+            }
+            this.Focus();
+        }
 
-        /// <summary>
-        /// Draws the control, using SpriteBatch and SpriteFont.
-        /// </summary>
+        float alpha = 0.1f;
         protected override void Draw()
         {
-            const string message = "I AM ERROR!\n";
+            update();
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
+            Vector2 pos = new Vector2(0, 0);
+            for (int i = 0; i < MapSize.map_size[0]; i++)
+                for (int j = 0; j < MapSize.map_size[1]; j++)
+            {
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+                pos.X = j * 16 * scale;
+                pos.Y = i * 16 * scale;
+                int sizee = (int)Math.Round( size * scale);
+                Rectangle rec = new Rectangle((int)pos.X, (int)pos.Y, sizee, sizee);
+                     if (rec.Contains(GetMousePosition()))
+                     {
+                         map_bgCol[i, j] += 0.1f;
+                         if (map_bgCol[i, j] >= 1f)
+                             map_bgCol[i, j] = 1f;
+                     }
+                map_bgCol[i, j] -= 0.01f;
+                if (map_bgCol[i, j] <= 0.1f)
+                    map_bgCol[i, j] = 0.1f;
+                spriteBatch.Draw(cell, pos, null, Color.White * map_bgCol[i, j], 0f, Vector2.Zero, new Vector2(scale,scale), SpriteEffects.None, 0f);
+            }
 
-            spriteBatch.Begin();
-            spriteBatch.DrawString(font, message, new Vector2(23, 23), Color.White);
             spriteBatch.End();
+
+
+
         }
     }
 }
+// PaletteControl = new PaletteControl(pictureBox1);

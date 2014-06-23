@@ -49,7 +49,17 @@ namespace WinFormsGraphicsDevice
         {
             InitializeComponent();
             HideHorizontalScrollBar();
+            this.mapEditControl2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.mapEditControl2_MouseClick);
+
         }
+
+        private void mapEditControl2_MouseClick(object sender, MouseEventArgs e)
+        {
+            MapEditControl.scale += (float)e.Delta / 400f;
+
+            System.Diagnostics.Debug.WriteLine("blah:" + e.Delta);
+        }
+
         public static byte[] ConvertFileToByteArray(string fileName)
         {
 
@@ -121,7 +131,7 @@ namespace WinFormsGraphicsDevice
             if (file_path != null)
             {
                 CHR_BUFFER = ConvertFileToByteArray(file_path);
-                this.spinningTriangleControl1.bytetotex(CHR_BUFFER);
+                this.chrViewControl1.bytetotex(CHR_BUFFER);
 
 
             }
@@ -246,6 +256,24 @@ namespace WinFormsGraphicsDevice
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void setMapSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MapSize m = new MapSize();
+            m.StartPosition = FormStartPosition.Manual;
+            m.Location = new Point(this.Location.X + 10, this.Location.Y + 10);
+            m.Show();
+        }
+
+        private void mapEditControl2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mapEditControl2_MouseDown(object sender, MouseEventArgs e)
+        {
+        
         }
 
 

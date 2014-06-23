@@ -39,9 +39,10 @@ namespace WinFormsGraphicsDevice
         int size = 32;
         SpriteFont font;
         List<RenderTarget2D> col_rt = new List<RenderTarget2D>();
-        CHRViewControl chr_view;
         Texture2D sel, sel_col;
         byte[] selected_pal = { 15, 0, 16, 48 };
+
+        CHRViewControl chr_view;
         [Description("SetCHRView"),
       Category("Data"),
       DefaultValue(null),
