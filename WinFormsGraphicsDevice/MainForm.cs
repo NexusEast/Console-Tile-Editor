@@ -15,6 +15,7 @@ namespace WinFormsGraphicsDevice
 {
     using Microsoft.Xna.Framework.Graphics;
     using System;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
@@ -33,26 +34,38 @@ namespace WinFormsGraphicsDevice
     /// </summary>
     public partial class MainForm : Form
     {
-        [System.Runtime.InteropServices.DllImport("user32", CallingConvention = System.Runtime.InteropServices.CallingConvention.Winapi)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        private static extern bool ShowScrollBar(IntPtr hwnd, int wBar, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)] bool bShow);
-        int SB_HORZ = 0;
-        int SB_VERT = 1;
-        int SB_BOTH = 3;
-        private void HideHorizontalScrollBar()
-        {
-            ShowScrollBar((IntPtr)listView1.Handle.ToInt64(),
-                SB_VERT
-                , false);
-        }
+  
         public MainForm()
         {
             InitializeComponent();
-            HideHorizontalScrollBar();
-            this.mapEditControl2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.mapEditControl2_MouseClick);
+          //  this.mapEditControl2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.mapEditControl2_MouseClick);
 
         }
-
+        const int WM_MOUSEWHEEL = 0x020A;
+        static public int wheel_value = 0;
+        static public bool isStopped = true;
+        static public int lastMouseScroll = 0;
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            // This will completely ignore the mouse wheel, which will disable zooming as well
+            wheel_value = 0;
+            if (m.Msg == WM_MOUSEWHEEL)
+            {
+                if ((int)m.WParam >= 0)
+                {
+                    wheel_value = 1;
+                    isStopped = false;
+                    lastMouseScroll = 0;
+                }
+                else
+                {
+                    isStopped = false;
+                    wheel_value = -1;
+                    lastMouseScroll = 0;
+                }
+            }
+            base.WndProc(ref m);
+        }
         private void mapEditControl2_MouseClick(object sender, MouseEventArgs e)
         {
             MapEditControl.scale += (float)e.Delta / 400f;
@@ -263,7 +276,7 @@ namespace WinFormsGraphicsDevice
             MapSize m = new MapSize();
             m.StartPosition = FormStartPosition.Manual;
             m.Location = new Point(this.Location.X + 10, this.Location.Y + 10);
-            m.Show();
+            m.ShowDialog();
         }
 
         private void mapEditControl2_Click(object sender, EventArgs e)

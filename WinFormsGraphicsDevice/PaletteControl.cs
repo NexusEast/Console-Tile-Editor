@@ -58,7 +58,10 @@ namespace WinFormsGraphicsDevice
                 chr_view = value;
             }
         }
+        protected override void Update(float dt)
+        {
 
+        }
         public byte[,] bgPal={{15,0,16,48},{15,1,33,49},{15,6,22,38},{15,9,25,41}};
         /// <summary>
         /// Initializes the control.

@@ -56,7 +56,10 @@ namespace WinFormsGraphicsDevice
                 pal = value;
             }
         }
+        protected override void Update(float dt)
+        {
 
+        }
         /// <summary>
         /// Initializes the control.
         /// </summary>

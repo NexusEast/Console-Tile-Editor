@@ -111,17 +111,18 @@ namespace WinFormsGraphicsDevice
 
         #region Paint
 
-
+        int last_time = DateTime.Now.Millisecond;
         /// <summary>
         /// Redraws the control in response to a WinForms paint message.
         /// </summary>
         protected override void OnPaint(PaintEventArgs e)
         {
             string beginDrawError = BeginDraw();
-
+              
             if (string.IsNullOrEmpty(beginDrawError))
             {
-                // Draw the control using the GraphicsDevice.
+             //   // Draw the control using the GraphicsDevice.
+                Update(((float)DateTime.Now.Millisecond - (float)last_time)/1000f);
                 Draw();
                 EndDraw();
             }
@@ -130,8 +131,9 @@ namespace WinFormsGraphicsDevice
                 // If BeginDraw failed, show an error message using System.Drawing.
                 PaintUsingSystemDrawing(e.Graphics, beginDrawError);
             }
+            last_time = DateTime.Now.Millisecond;
         }
-
+         
 
         /// <summary>
         /// Attempts to begin drawing the control. Returns an error message string
@@ -296,6 +298,11 @@ namespace WinFormsGraphicsDevice
         /// Derived classes override this to draw themselves using the GraphicsDevice.
         /// </summary>
         protected abstract void Draw();
+
+        /// <summary>
+        /// Derived classes override this to draw themselves using the GraphicsDevice.
+        /// </summary>
+        protected abstract void Update(float dt);
 
 
         #endregion

@@ -26,8 +26,7 @@ namespace WinFormsGraphicsDevice
 
         private void button1_Click(object sender, EventArgs e)
         {
-            map_size[0] = (int)numericUpDown1.Value;
-            map_size[1] = (int)numericUpDown2.Value;
+            MapEditControl.updateSize((int)numericUpDown1.Value, (int)numericUpDown2.Value); 
             this.Dispose();
         }
     }

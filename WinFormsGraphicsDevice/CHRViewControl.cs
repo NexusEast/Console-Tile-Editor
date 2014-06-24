@@ -59,6 +59,11 @@ namespace WinFormsGraphicsDevice
             }
         }
 
+        protected override void Update(float dt)
+        {
+           
+        }
+
         Color[] paletteCol = {
                                  Color.Black,
                                  new Color(80, 80, 80),
