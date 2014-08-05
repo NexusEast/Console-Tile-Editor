@@ -135,7 +135,7 @@ namespace WinFormsGraphicsDevice
                 { 
                         imageList1.Images.Clear();
                         listView1.Items.Clear();
-                        pictureBox1.Image = null;
+                    filteredPictureBox1 .Image = null;
                         total_image_idx = 0; 
                 }
                 else return;
@@ -224,8 +224,8 @@ namespace WinFormsGraphicsDevice
             return Bmp;
         }
         private void button1_Click(object sender, System.EventArgs e)
-        { 
-            imageList1.Images.Add(FixedSize(pictureBox1.Image, 32, 32));
+        {
+            imageList1.Images.Add(FixedSize(filteredPictureBox1.Image, 32, 32));
             ListViewItem item = new ListViewItem();
             item.ImageIndex = total_image_idx;
             this.listView1.Items.Add(item);
@@ -287,6 +287,11 @@ namespace WinFormsGraphicsDevice
         private void mapEditControl2_MouseDown(object sender, MouseEventArgs e)
         {
         
+        }
+
+        private void filteredPictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
 
 

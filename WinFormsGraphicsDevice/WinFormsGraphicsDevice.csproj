@@ -51,6 +51,9 @@
     <Compile Include="ColorControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FilteredPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MapSize.cs">
       <SubType>Form</SubType>
     </Compile>

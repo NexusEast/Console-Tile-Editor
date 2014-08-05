@@ -175,7 +175,7 @@ namespace WinFormsGraphicsDevice
                         line++;
                 }
           
-            if (frameCount % 500 == 449)
+            if (frameCount % 200 == 199)
             {
                 chr_view.updatePalette(selected_pal);
             }

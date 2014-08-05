@@ -40,14 +40,14 @@ namespace WinFormsGraphicsDevice
         Rectangle selectedRect = new Rectangle();
         SpriteFont font;
         RenderTarget2D monotex;
-        System.Windows.Forms.PictureBox _pb;
+        FilteredPictureBox _pb;
         byte[] chr_buffer;
 
         [Description("SetPictureBox"),
         Category("Data"),
         DefaultValue(null),
         Browsable(true)]
-        public System.Windows.Forms.PictureBox SetPictureBox
+        public FilteredPictureBox SetPictureBox
         {
             get
             {
@@ -300,7 +300,9 @@ namespace WinFormsGraphicsDevice
 
                 GraphicsDevice.SetRenderTarget(clippedTex);
                 GraphicsDevice.Clear(Color.Black);
-                spriteBatch.Begin();
+               // spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+           
                 if (monotex != null)
                     spriteBatch.Draw(monotex, Vector2.Zero, new Rectangle(formatted.X / 2, formatted.Y / 2, formatted.Width / 2, formatted.Height / 2), Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 1);
                 spriteBatch.End();

@@ -40,10 +40,7 @@ namespace WinFormsGraphicsDevice
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setMapSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chrViewControl1 = new WinFormsGraphicsDevice.CHRViewControl();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.mapEditControl2 = new WinFormsGraphicsDevice.MapEditControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -52,12 +49,15 @@ namespace WinFormsGraphicsDevice
             this.button2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.paletteControl1 = new WinFormsGraphicsDevice.PaletteControl();
+            this.chrViewControl1 = new WinFormsGraphicsDevice.CHRViewControl();
+            this.filteredPictureBox1 = new WinFormsGraphicsDevice.FilteredPictureBox();
             this.colorControl1 = new WinFormsGraphicsDevice.ColorControl();
+            this.mapEditControl2 = new WinFormsGraphicsDevice.MapEditControl();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.filteredPictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -68,7 +68,7 @@ namespace WinFormsGraphicsDevice
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(828, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(828, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -79,25 +79,25 @@ namespace WinFormsGraphicsDevice
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -107,7 +107,7 @@ namespace WinFormsGraphicsDevice
             this.cHRAsTileSetToolStripMenuItem,
             this.paletteToolStripMenuItem});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(60, 21);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.importToolStripMenuItem.Text = "Import";
             // 
             // cHRAsTileSetToolStripMenuItem
@@ -129,13 +129,13 @@ namespace WinFormsGraphicsDevice
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setMapSizeToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(66, 21);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // setMapSizeToolStripMenuItem
             // 
             this.setMapSizeToolStripMenuItem.Name = "setMapSizeToolStripMenuItem";
-            this.setMapSizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.setMapSizeToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.setMapSizeToolStripMenuItem.Text = "Set Map Size";
             this.setMapSizeToolStripMenuItem.Click += new System.EventHandler(this.setMapSizeToolStripMenuItem_Click);
             // 
@@ -149,26 +149,6 @@ namespace WinFormsGraphicsDevice
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "CHR Tile Set";
             // 
-            // chrViewControl1
-            // 
-            this.chrViewControl1.Location = new System.Drawing.Point(6, 20);
-            this.chrViewControl1.Name = "chrViewControl1";
-            this.chrViewControl1.SetPictureBox = this.pictureBox1;
-            this.chrViewControl1.Size = new System.Drawing.Size(256, 256);
-            this.chrViewControl1.TabIndex = 0;
-            this.chrViewControl1.Text = "chrViewControl1";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(8, 20);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(128, 128);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.mapEditControl2);
@@ -179,20 +159,9 @@ namespace WinFormsGraphicsDevice
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Map Editor";
             // 
-            // mapEditControl2
-            // 
-            this.mapEditControl2.Location = new System.Drawing.Point(12, 20);
-            this.mapEditControl2.Name = "mapEditControl2";
-            this.mapEditControl2.SetCHRView = this.chrViewControl1;
-            this.mapEditControl2.Size = new System.Drawing.Size(512, 480);
-            this.mapEditControl2.TabIndex = 0;
-            this.mapEditControl2.Text = "mapEditControl2";
-            this.mapEditControl2.Click += new System.EventHandler(this.mapEditControl2_Click);
-            this.mapEditControl2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mapEditControl2_MouseDown);
-            // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.pictureBox1);
+            this.groupBox3.Controls.Add(this.filteredPictureBox1);
             this.groupBox3.Location = new System.Drawing.Point(674, 325);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(142, 156);
@@ -267,6 +236,26 @@ namespace WinFormsGraphicsDevice
             this.paletteControl1.TabIndex = 14;
             this.paletteControl1.Text = "paletteControl1";
             // 
+            // chrViewControl1
+            // 
+            this.chrViewControl1.Location = new System.Drawing.Point(6, 20);
+            this.chrViewControl1.Name = "chrViewControl1";
+            this.chrViewControl1.SetPictureBox = this.filteredPictureBox1;
+            this.chrViewControl1.Size = new System.Drawing.Size(256, 256);
+            this.chrViewControl1.TabIndex = 0;
+            this.chrViewControl1.Text = "chrViewControl1";
+            // 
+            // filteredPictureBox1
+            // 
+            this.filteredPictureBox1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.filteredPictureBox1.Location = new System.Drawing.Point(6, 19);
+            this.filteredPictureBox1.Name = "filteredPictureBox1";
+            this.filteredPictureBox1.Size = new System.Drawing.Size(128, 128);
+            this.filteredPictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.filteredPictureBox1.TabIndex = 15;
+            this.filteredPictureBox1.TabStop = false;
+            this.filteredPictureBox1.Click += new System.EventHandler(this.filteredPictureBox1_Click);
+            // 
             // colorControl1
             // 
             this.colorControl1.Location = new System.Drawing.Point(548, 531);
@@ -275,6 +264,17 @@ namespace WinFormsGraphicsDevice
             this.colorControl1.Size = new System.Drawing.Size(256, 96);
             this.colorControl1.TabIndex = 12;
             this.colorControl1.Text = "paletteControl1";
+            // 
+            // mapEditControl2
+            // 
+            this.mapEditControl2.Location = new System.Drawing.Point(12, 20);
+            this.mapEditControl2.Name = "mapEditControl2";
+            this.mapEditControl2.SetCHRView = this.chrViewControl1;
+            this.mapEditControl2.Size = new System.Drawing.Size(512, 480);
+            this.mapEditControl2.TabIndex = 0;
+            this.mapEditControl2.Text = "mapEditControl2";
+            this.mapEditControl2.Click += new System.EventHandler(this.mapEditControl2_Click);
+            this.mapEditControl2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mapEditControl2_MouseDown);
             // 
             // MainForm
             // 
@@ -300,9 +300,9 @@ namespace WinFormsGraphicsDevice
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.filteredPictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -319,7 +319,6 @@ namespace WinFormsGraphicsDevice
         private System.Windows.Forms.ToolStripMenuItem cHRAsTileSetToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListView listView1;
@@ -335,6 +334,7 @@ namespace WinFormsGraphicsDevice
         private CHRViewControl chrViewControl1;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setMapSizeToolStripMenuItem;
+        private FilteredPictureBox filteredPictureBox1;
 
     }
 }
